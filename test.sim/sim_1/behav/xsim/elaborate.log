@@ -1,0 +1,28 @@
+Vivado Simulator 2018.2
+Copyright 1986-1999, 2001-2018 Xilinx, Inc. All Rights Reserved.
+Running: F:/Xilinx/Vivado/2018.2/bin/unwrapped/win64.o/xelab.exe -wto 916e73ac7991439ca6e2eb3f8b91f83e --incr --debug typical --relax --mt 2 -L xil_defaultlib -L unisims_ver -L unimacro_ver -L secureip --snapshot dual_can_tb_behav xil_defaultlib.dual_can_tb xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Completed static elaboration
+Starting simulation data flow analysis
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.can_register_asyn_syn(WIDTH=1,RE...
+Compiling module xil_defaultlib.can_register_asyn(WIDTH=4)
+Compiling module xil_defaultlib.can_register_asyn(WIDTH=3)
+Compiling module xil_defaultlib.can_register_asyn_syn(WIDTH=1,RE...
+Compiling module xil_defaultlib.can_register_asyn_syn(WIDTH=2,RE...
+Compiling module xil_defaultlib.can_register
+Compiling module xil_defaultlib.can_register_asyn(RESET_VALUE=96...
+Compiling module xil_defaultlib.can_register_asyn(WIDTH=1)
+Compiling module xil_defaultlib.can_registers
+Compiling module xil_defaultlib.can_btl
+Compiling module xil_defaultlib.can_crc
+Compiling module xil_defaultlib.can_acf
+Compiling module xil_defaultlib.can_fifo
+Compiling module xil_defaultlib.can_ibo
+Compiling module xil_defaultlib.can_bsp
+Compiling module xil_defaultlib.can_top
+Compiling module xil_defaultlib.dual_can_tb
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot dual_can_tb_behav

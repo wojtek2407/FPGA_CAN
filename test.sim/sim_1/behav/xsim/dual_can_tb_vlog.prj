@@ -1,0 +1,22 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  --include "../../../../test.srcs/sources_1" --include "../../../../test.srcs/sim_1" \
+"../../../../test.srcs/sources_1/can_acf.v" \
+"../../../../test.srcs/sources_1/can_bsp.v" \
+"../../../../test.srcs/sources_1/can_btl.v" \
+"../../../../test.srcs/sources_1/can_crc.v" \
+"../../../../test.srcs/sources_1/can_fifo.v" \
+"../../../../test.srcs/sources_1/can_ibo.v" \
+"../../../../test.srcs/sources_1/can_register.v" \
+"../../../../test.srcs/sources_1/can_register_asyn.v" \
+"../../../../test.srcs/sources_1/can_register_asyn_syn.v" \
+"../../../../test.srcs/sources_1/can_registers.v" \
+"../../../../test.srcs/sources_1/can_top.v" \
+"../../../../test.srcs/sources_1/can_register_syn.v" \
+"../../../../test.srcs/sim_1/can_testbench.v" \
+"../../../../test.srcs/sim_1/new/dual_can_tb.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

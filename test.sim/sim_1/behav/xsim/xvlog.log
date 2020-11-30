@@ -1,0 +1,31 @@
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/wojte/Desktop/test/test.srcs/sources_1/can_acf.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module can_acf
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/wojte/Desktop/test/test.srcs/sources_1/can_bsp.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module can_bsp
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/wojte/Desktop/test/test.srcs/sources_1/can_btl.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module can_btl
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/wojte/Desktop/test/test.srcs/sources_1/can_crc.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module can_crc
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/wojte/Desktop/test/test.srcs/sources_1/can_fifo.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module can_fifo
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/wojte/Desktop/test/test.srcs/sources_1/can_ibo.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module can_ibo
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/wojte/Desktop/test/test.srcs/sources_1/can_register.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module can_register
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/wojte/Desktop/test/test.srcs/sources_1/can_register_asyn.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module can_register_asyn
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/wojte/Desktop/test/test.srcs/sources_1/can_register_asyn_syn.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module can_register_asyn_syn
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/wojte/Desktop/test/test.srcs/sources_1/can_registers.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module can_registers
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/wojte/Desktop/test/test.srcs/sources_1/can_top.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module can_top
+INFO: [VRFC 10-2458] undeclared symbol rx_inter, assumed default net type wire [C:/Users/wojte/Desktop/test/test.srcs/sources_1/can_top.v:589]
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/wojte/Desktop/test/test.srcs/sources_1/can_register_syn.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module can_register_syn
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/wojte/Desktop/test/test.srcs/sim_1/can_testbench.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module can_testbench
+INFO: [VRFC 10-2458] undeclared symbol tx2_i, assumed default net type wire [C:/Users/wojte/Desktop/test/test.srcs/sim_1/can_testbench.v:314]
+INFO: [VRFC 10-2458] undeclared symbol bus_off2_on, assumed default net type wire [C:/Users/wojte/Desktop/test/test.srcs/sim_1/can_testbench.v:315]
+INFO: [VRFC 10-2263] Analyzing Verilog file "C:/Users/wojte/Desktop/test/test.srcs/sim_1/new/dual_can_tb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module dual_can_tb
