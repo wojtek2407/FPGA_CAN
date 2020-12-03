@@ -1,7 +1,7 @@
-Running: xsim.dir/dual_can_tb_behav/xsimk.exe -simmode gui -wdb dual_can_tb_behav.wdb -simrunnum 0 -socket 60778
+Running: xsim.dir/dual_can_tb_behav/xsimk.exe -simmode gui -wdb dual_can_tb_behav.wdb -simrunnum 0 -socket 62333
 Design successfully loaded
-Design Loading Memory Usage: 6320 KB (Peak: 6320 KB)
-Design Loading CPU Usage: 61 ms
+Design Loading Memory Usage: 6324 KB (Peak: 6324 KB)
+Design Loading CPU Usage: 62 ms
 Simulation completed
-Simulation Memory Usage: 13544 KB (Peak: 13544 KB)
-Simulation CPU Usage: 4828 ms
+Simulation Memory Usage: 11940 KB (Peak: 11940 KB)
+Simulation CPU Usage: 3436 ms

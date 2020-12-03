@@ -13,8 +13,6 @@
 
 module dual_can_tb();
 
-parameter BRP = 2*(`CAN_TIMING0_BRP + 1);
-
 reg  clk;
 
 reg  wb_clk_i;
@@ -38,8 +36,9 @@ reg  [7:0] wb1_adr_i;
 wire       wb1_ack_o;
 reg        wb1_stb_i;
 
-wire rx_and_tx;
+wire can_bus;
 wire can0_tx, can1_tx;
+wire can0_irq_n, can1_irq_n;
 
 can_top u_can0( 
     .wb_clk_i(wb_clk_i),
@@ -52,10 +51,10 @@ can_top u_can0(
     .wb_adr_i(wb0_adr_i),
     .wb_ack_o(wb0_ack_o),
     .clk_i(clk),
-    .rx_i(rx_and_tx),
+    .rx_i(can_bus),
     .tx_o(can0_tx),
     .bus_off_on(),
-    .irq_on(),
+    .irq_on(can0_irq_n),
     .clkout_o()
 );
 
@@ -70,10 +69,10 @@ can_top u_can1(
     .wb_adr_i(wb1_adr_i),
     .wb_ack_o(wb1_ack_o),
     .clk_i(clk),
-    .rx_i(rx_and_tx),
+    .rx_i(can_bus),
     .tx_o(can1_tx),
     .bus_off_on(),
-    .irq_on(),
+    .irq_on(can1_irq_n),
     .clkout_o()
 );
 
@@ -92,13 +91,24 @@ begin
     forever #50 wb_clk_i = ~wb_clk_i;
 end
 
-assign rx_and_tx = can0_tx & can1_tx;
+assign can_bus = can0_tx & can1_tx;
 
 reg [7:0] rx_data = 8'h00;
 integer i = 0;
+integer seed = 0;
+
+reg [7:0] can0_tx_data [7:0];
+reg [7:0] can1_tx_data [7:0];
 
 initial 
 begin
+
+    seed = 100;
+    $srandom(seed);
+    for (i = 0; i < 8; i = i + 1) begin
+        can0_tx_data[i] = $urandom_range(0,255);
+        can1_tx_data[i] = $urandom_range(0,255);
+    end
 
     wb0_we_i  = 0;
     wb0_cyc_i = 0;
@@ -112,9 +122,9 @@ begin
     wb1_adr_i = 0;
     
     wb_rst_i = 1;
-    #1000
-    wb_rst_i = 0;
-    #1000
+    #10000
+    @(posedge clk) wb_rst_i = 0;
+    #10000
     
     // reset mode on
     write_can0_register(8'd0, 8'h01);  
@@ -122,22 +132,13 @@ begin
     write_can0_register(8'd6, {`CAN_TIMING0_SJW, `CAN_TIMING0_BRP});  
     write_can0_register(8'd7, {`CAN_TIMING1_SAM, `CAN_TIMING1_TSEG2, `CAN_TIMING1_TSEG1});
     write_can0_register(8'd31, {1'b0, 3'h0, 1'b0, 3'h0});   // Setting the normal mode (not extended)
-    write_can0_register(8'd4, 8'h84); // acceptance code
-    write_can0_register(8'd5, 8'h00); // acceptance mask
+    write_can0_register(8'd4, 8'h00); // acceptance code
+    write_can0_register(8'd5, 8'hff); // acceptance mask
     // reset mode off
-    write_can0_register(8'd0, 8'h00);  
+    write_can0_register(8'd0, 8'h02);  
     
     write_can0_register(8'd10, 8'h88); // Writing ID[10:3] = 0x55
-    write_can0_register(8'd11, 8'h28); // Writing ID[2:0] = 0x3, rtr = 1, length = 7
-    write_can0_register(8'd12, 8'h00); // data byte 1
-    write_can0_register(8'd13, 8'h11); // data byte 2
-    write_can0_register(8'd14, 8'h22); // data byte 3
-    write_can0_register(8'd15, 8'h33); // data byte 4
-    write_can0_register(8'd16, 8'h44); // data byte 5
-    write_can0_register(8'd17, 8'h55); // data byte 6
-    write_can0_register(8'd18, 8'h66); // data byte 7
-    write_can0_register(8'd19, 8'h77); // data byte 8
-    
+    write_can0_register(8'd11, 8'h48); // Writing ID[2:0] = 0x3, rtr = 0, length = 8
     
     // reset mode on
     write_can1_register(8'd0, 8'h01);  
@@ -145,42 +146,45 @@ begin
     write_can1_register(8'd6, {`CAN_TIMING0_SJW, `CAN_TIMING0_BRP});  
     write_can1_register(8'd7, {`CAN_TIMING1_SAM, `CAN_TIMING1_TSEG2, `CAN_TIMING1_TSEG1});
     write_can1_register(8'd31, {1'b0, 3'h0, 1'b0, 3'h0});   // Setting the normal mode (not extended)
-    write_can1_register(8'd4, 8'h88); // acceptance code
-    write_can1_register(8'd5, 8'h00); // acceptance mask
+    write_can1_register(8'd4, 8'h00); // acceptance code
+    write_can1_register(8'd5, 8'hff); // acceptance mask
     // reset mode off
-    write_can1_register(8'd0, 8'h00);  
+    write_can1_register(8'd0, 8'h02);  
     
-    write_can1_register(8'd10, 8'h84); // Writing ID[10:3] = 0x55
-    write_can1_register(8'd11, 8'h28); // Writing ID[2:0] = 0x3, rtr = 1, length = 7
-    write_can1_register(8'd12, 8'hff); // data byte 1
-    write_can1_register(8'd13, 8'hee); // data byte 2
-    write_can1_register(8'd14, 8'hdd); // data byte 3
-    write_can1_register(8'd15, 8'hcc); // data byte 4
-    write_can1_register(8'd16, 8'hbb); // data byte 5
-    write_can1_register(8'd17, 8'haa); // data byte 6
-    write_can1_register(8'd18, 8'h99); // data byte 7
-    write_can1_register(8'd19, 8'h88); // data byte 8
+    write_can1_register(8'd10, 8'h88); // Writing ID[10:3] = 0x55
+    write_can1_register(8'd11, 8'hA8); // Writing ID[2:0] = 0x3, rtr = 0, length = 8
     
+    for (i = 0; i < 8; i = i + 1) begin
+        write_can0_register(12+i, can0_tx_data[i]);
+        write_can1_register(12+i, can1_tx_data[i]);
+    end
+    
+
     #100000;
- 
+
     fork
         write_can0_register(8'd1, 8'h01); // tx_request
         write_can1_register(8'd1, 8'h01); // tx_request  
     join
     
-    #3500000
+    #2400000
     
 
     for (i = 0; i < 8; i = i + 1) begin
         read_can0_register(22+i, rx_data);
+        if (rx_data == can1_tx_data[i]) $display("ok");
+        else $display("nok");
     end
     write_can0_register(8'd1, 8'h4);
     
     for (i = 0; i < 8; i = i + 1) begin
         read_can1_register(22+i, rx_data);
+        if (rx_data == can0_tx_data[i]) $display("ok");
+        else $display("nok");
     end
     write_can1_register(8'd1, 8'h4);
-    
+
+    #100000;
     $stop;
     
 end

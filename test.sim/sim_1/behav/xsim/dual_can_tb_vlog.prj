@@ -13,6 +13,8 @@ verilog xil_defaultlib  --include "../../../../test.srcs/sources_1" --include ".
 "../../../../test.srcs/sources_1/can_top.v" \
 "../../../../test.srcs/sources_1/can_register_syn.v" \
 "../../../../test.srcs/sim_1/can_testbench.v" \
+
+sv xil_defaultlib  --include "../../../../test.srcs/sources_1" --include "../../../../test.srcs/sim_1" \
 "../../../../test.srcs/sim_1/new/dual_can_tb.v" \
 
 # compile glbl module
