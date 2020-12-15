@@ -3,13 +3,10 @@
 `define CAN_WISHBONE_IF
 
 `define CAN_MODE_RESET                  1'h1    /* Reset mode */
-
-`define CAN_TIMING0_BRP                 6'h3    /* Baud rate prescaler (2*(value+1)) */
-`define CAN_TIMING0_SJW                 2'h1    /* SJW (value+1) */
-
-`define CAN_TIMING1_TSEG1               4'hf    /* TSEG1 segment (value+1) */
-`define CAN_TIMING1_TSEG2               3'h2    /* TSEG2 segment (value+1) */
-`define CAN_TIMING1_SAM                 1'h0    /* Triple sampling */
+`define CAN_TIMING0_BRP                 6'h0    /* Baud rate prescaler */
+`define CAN_TIMING0_SJW                 2'h1    /* SJW */
+`define CAN_TIMING1_TSEG1               4'hf    /* TSEG1 segment */
+`define CAN_TIMING1_TSEG2               3'h2    /* TSEG2 segment */
 
 module dual_can_tb();
 
@@ -77,11 +74,11 @@ can_top u_can1(
 );
 
 
-// can clk 32 MHz
+// can clk 40 MHz
 initial
 begin
     clk=0;
-    forever #31.25 clk = ~clk;
+    forever #12.5 clk = ~clk;
 end
 
 // wishbone clk 10 MHz
@@ -126,65 +123,49 @@ begin
     @(posedge clk) wb_rst_i = 0;
     #10000
     
-    // reset mode on
-    write_can0_register(8'd0, 8'h01);  
-    // can timming
-    write_can0_register(8'd6, {`CAN_TIMING0_SJW, `CAN_TIMING0_BRP});  
-    write_can0_register(8'd7, {`CAN_TIMING1_SAM, `CAN_TIMING1_TSEG2, `CAN_TIMING1_TSEG1});
-    write_can0_register(8'd31, {1'b0, 3'h0, 1'b0, 3'h0});   // Setting the normal mode (not extended)
-    write_can0_register(8'd4, 8'h00); // acceptance code
-    write_can0_register(8'd5, 8'hff); // acceptance mask
-    // reset mode off
-    write_can0_register(8'd0, 8'h02);  
+    write_can0_register(8'h00, 8'h01); // reset mode on
+    write_can0_register(8'h06, {`CAN_TIMING0_SJW, `CAN_TIMING0_BRP});  
+    write_can0_register(8'h07, {1'b0, `CAN_TIMING1_TSEG2, `CAN_TIMING1_TSEG1});
+    write_can0_register(8'h04, 8'h00); // acceptance code
+    write_can0_register(8'h05, 8'hff); // acceptance mask
+    write_can0_register(8'h00, 8'h02); // reset mode off
+    write_can0_register(8'h0A, 8'h88); // Writing ID[10:3]
+    write_can0_register(8'h0B, 8'h48); // Writing ID[2:0], rtr = 0, length = 8 
+    for (i = 0; i < 8; i = i + 1) write_can0_register(8'h0C+i, can0_tx_data[i]);
     
-    write_can0_register(8'd10, 8'h88); // Writing ID[10:3] = 0x55
-    write_can0_register(8'd11, 8'h48); // Writing ID[2:0] = 0x3, rtr = 0, length = 8
+    write_can1_register(8'h00, 8'h01); // reset mode on
+    write_can1_register(8'h06, {`CAN_TIMING0_SJW, `CAN_TIMING0_BRP});  
+    write_can1_register(8'h07, {1'b0, `CAN_TIMING1_TSEG2, `CAN_TIMING1_TSEG1});
+    write_can1_register(8'h04, 8'h00); // acceptance code
+    write_can1_register(8'h05, 8'hff); // acceptance mask
+    write_can1_register(8'h00, 8'h02); // reset mode off
+    write_can1_register(8'h0A, 8'h88); // Writing ID[10:3]
+    write_can1_register(8'h0B, 8'hA8); // Writing ID[2:0], rtr = 0, length = 8 
+    for (i = 0; i < 8; i = i + 1) write_can1_register(8'h0C+i, can1_tx_data[i]);
     
-    // reset mode on
-    write_can1_register(8'd0, 8'h01);  
-    // can timming
-    write_can1_register(8'd6, {`CAN_TIMING0_SJW, `CAN_TIMING0_BRP});  
-    write_can1_register(8'd7, {`CAN_TIMING1_SAM, `CAN_TIMING1_TSEG2, `CAN_TIMING1_TSEG1});
-    write_can1_register(8'd31, {1'b0, 3'h0, 1'b0, 3'h0});   // Setting the normal mode (not extended)
-    write_can1_register(8'd4, 8'h00); // acceptance code
-    write_can1_register(8'd5, 8'hff); // acceptance mask
-    // reset mode off
-    write_can1_register(8'd0, 8'h02);  
-    
-    write_can1_register(8'd10, 8'h88); // Writing ID[10:3] = 0x55
-    write_can1_register(8'd11, 8'hA8); // Writing ID[2:0] = 0x3, rtr = 0, length = 8
-    
-    for (i = 0; i < 8; i = i + 1) begin
-        write_can0_register(12+i, can0_tx_data[i]);
-        write_can1_register(12+i, can1_tx_data[i]);
-    end
-    
-
-    #100000;
+    #10000
 
     fork
-        write_can0_register(8'd1, 8'h01); // tx_request
-        write_can1_register(8'd1, 8'h01); // tx_request  
+        write_can0_register(8'h01, 8'h01); // tx_request
+        write_can1_register(8'h01, 8'h01); // tx_request  
     join
     
-    #2400000
+    @(!can0_irq_n & !can1_irq_n);
     
-
     for (i = 0; i < 8; i = i + 1) begin
-        read_can0_register(22+i, rx_data);
+        read_can0_register(8'h16+i, rx_data);
         if (rx_data == can1_tx_data[i]) $display("ok");
         else $display("nok");
     end
-    write_can0_register(8'd1, 8'h4);
+    write_can0_register(8'h01, 8'h4);
     
     for (i = 0; i < 8; i = i + 1) begin
-        read_can1_register(22+i, rx_data);
+        read_can1_register(8'h16+i, rx_data);
         if (rx_data == can0_tx_data[i]) $display("ok");
         else $display("nok");
     end
-    write_can1_register(8'd1, 8'h4);
+    write_can1_register(8'h01, 8'h4);
 
-    #100000;
     $stop;
     
 end
